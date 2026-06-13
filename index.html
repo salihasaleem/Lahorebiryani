@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Lahore Biryani & Chicken Roast</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600;700;800&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Amiri:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--gold:#c9a84c;--gold-l:#f0d882;--gold-d:#7a5510;--gold-dd:#4a3008;--cream:#f0dfc0}
+html,body{max-width:480px;margin:0 auto;background:#180000;overflow-x:hidden;font-family:'Lato',sans-serif;
+  background-image:url('images/bg-texture.jpg');background-size:100% auto;background-repeat:repeat-y}
+.screen{display:none;flex-direction:column;min-height:100vh}
+.screen.active{display:flex}
+.gd{height:3px;background:linear-gradient(90deg,transparent,var(--gold-d) 15%,var(--gold) 50%,var(--gold-d) 85%,transparent);flex-shrink:0}
+.gd-thin{height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.4) 50%,transparent);margin:8px 0}
+.orn{display:flex;align-items:center;justify-content:center;gap:7px;margin-bottom:4px}
+.orn.bot{margin-top:4px;margin-bottom:0}
+.ol{height:1px;width:30px;background:linear-gradient(90deg,transparent,var(--gold))}
+.orr{background:linear-gradient(90deg,var(--gold),transparent)}
+.os{color:var(--gold);font-size:11px}
+.btn{border:none;border-radius:8px;cursor:pointer;font-family:'Cinzel',serif;font-weight:700;letter-spacing:0.3px;display:flex;align-items:center;justify-content:center;gap:6px;touch-action:manipulation;-webkit-appearance:none;transition:opacity 0.15s}
+.btn:active{opacity:0.8}
+.btn-gold{background:linear-gradient(135deg,var(--gold-dd),var(--gold-d),var(--gold),var(--gold-d));color:#030000;box-shadow:0 3px 16px rgba(201,168,76,0.45)}
+.btn-wa{background:#25D366;color:#fff;box-shadow:0 3px 14px rgba(37,211,102,0.4)}
+.btn-red{background:linear-gradient(135deg,#500000,#800000);color:var(--cream);border:1px solid rgba(201,168,76,0.2)}
+.btn-outline{background:transparent;border:1.5px solid var(--gold);color:var(--gold)}
+.inp{width:100%;padding:13px 14px;background:rgba(0,0,0,0.72);border:1px solid rgba(201,168,76,0.35);border-radius:8px;color:var(--cream);font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;outline:none;-webkit-appearance:none}
+.inp:focus{border-color:var(--gold);background:rgba(0,0,0,0.88)}
+.inp::placeholder{color:rgba(240,223,192,0.35)}
+.lbl{font-family:'Cinzel',serif;font-size:11px;color:var(--gold);letter-spacing:0.5px;margin-bottom:6px;display:block}
+#toast{position:fixed;bottom:88px;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(201,168,76,0.96);color:#030000;padding:10px 20px;border-radius:20px;font-family:'Cinzel',serif;font-size:11px;font-weight:700;opacity:0;transition:all 0.3s;z-index:9999;pointer-events:none;white-space:nowrap;max-width:90vw;text-align:center}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+#toast.err{background:rgba(140,0,0,0.96);color:#fff}
+#toast.ok{background:rgba(10,120,50,0.96);color:#fff}
+
+/* LOGIN */
+#loginScreen{background-image:url('images/bg-texture.jpg');background-size:cover;background-position:center;align-items:center;justify-content:center;padding:28px 18px;position:relative}
+#loginScreen::before{content:'';position:absolute;inset:0;background:rgba(2,0,0,0.8);z-index:0}
+.lw{position:relative;z-index:1;width:100%;max-width:380px;display:flex;flex-direction:column;align-items:center}
+.logo-wrap{width:130px;height:130px;border-radius:50%;border:3px solid var(--gold);overflow:hidden;background:#fff;margin-bottom:14px;box-shadow:0 0 28px rgba(201,168,76,0.5)}
+.logo-wrap img{width:100%;height:100%;object-fit:cover;object-position:center}
+.login-title{font-family:'Cinzel Decorative',cursive;font-size:19px;color:var(--gold);text-shadow:0 2px 12px rgba(0,0,0,0.95);text-align:center;margin-bottom:2px;line-height:1.2}
+.login-sub{font-family:'Amiri',serif;font-style:italic;font-size:13px;color:var(--cream);text-align:center;margin-bottom:20px;opacity:0.82}
+.login-card{width:100%;background:rgba(4,0,0,0.92);border:1px solid rgba(201,168,76,0.38);border-radius:14px;box-shadow:0 6px 30px rgba(0,0,0,0.7);padding:22px}
+.tab-row{display:grid;grid-template-columns:1fr 1fr;border:1px solid rgba(201,168,76,0.28);border-radius:8px;overflow:hidden;margin-bottom:20px}
+.tab-btn{padding:12px;background:transparent;border:none;font-family:'Cinzel',serif;font-size:12px;font-weight:700;color:rgba(201,168,76,0.4);cursor:pointer;touch-action:manipulation}
+.tab-btn.on{background:linear-gradient(135deg,var(--gold-dd),var(--gold-d));color:var(--gold-l)}
+.form-g{margin-bottom:13px}
+.sep{text-align:center;margin:14px 0;font-family:'Amiri',serif;font-style:italic;font-size:13px;color:rgba(240,223,192,0.32)}
+
+/* NAVBAR */
+.navbar{position:sticky;top:0;z-index:50;display:flex;justify-content:space-between;align-items:center;padding:9px 13px;background:rgba(1,0,0,0.94);backdrop-filter:blur(10px);border-bottom:1px solid rgba(201,168,76,0.2);flex-shrink:0}
+.nav-left{display:flex;align-items:center;gap:9px}
+.nav-logo-wrap{width:38px;height:38px;border-radius:50%;border:2px solid var(--gold);overflow:hidden;background:#fff;flex-shrink:0}
+.nav-logo-wrap img{width:100%;height:100%;object-fit:cover;object-position:center}
+.nav-txt .l1{font-family:'Cinzel',serif;font-size:10px;font-weight:800;color:var(--gold);letter-spacing:0.2px;display:block}
+.nav-txt .l2{font-size:6.5px;color:rgba(240,223,192,0.65);display:block}
+.nav-right{display:flex;align-items:center;gap:8px}
+.nav-name{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12px;color:var(--cream);max-width:75px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cart-btn{position:relative;background:rgba(201,168,76,0.1);border:1.5px solid var(--gold);border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;touch-action:manipulation}
+.cart-cnt{position:absolute;top:-5px;right:-5px;background:#cc0000;color:#fff;border-radius:50%;width:17px;height:17px;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center}
+
+/* HERO */
+.hero{position:relative;height:300px;overflow:hidden;flex-shrink:0;border-bottom:3px solid var(--gold)}
+.hero img{width:100%;height:100%;object-fit:cover;object-position:center 30%}
+.hero-g{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0.42) 0%,rgba(0,0,0,0.04) 38%,rgba(2,0,0,0.95) 100%),linear-gradient(90deg,rgba(0,0,0,0.42) 0%,transparent 62%)}
+.hero-txt{position:absolute;bottom:16px;left:14px;right:14px}
+.h-t{font-family:'Cinzel Decorative',cursive;font-size:38px;font-weight:900;color:var(--gold);text-shadow:2px 2px 0 #2a0e00,0 0 28px rgba(201,168,76,0.5);line-height:0.9}
+.h-s{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:18px;color:#fff;text-shadow:1px 1px 8px rgba(0,0,0,0.9);letter-spacing:2px;margin-top:3px}
+.h-tag{font-family:'Amiri',serif;font-style:italic;font-size:12px;color:var(--gold-l);margin-top:3px;opacity:0.88}
+
+/* MENU */
+.sec-wrap{background:rgba(2,0,0,0.55);margin-top:12px}
+.sec-head{text-align:center;padding:13px 16px 10px}
+.sec-title{font-family:'Cinzel Decorative',cursive;font-size:14px;font-weight:700;color:var(--gold);letter-spacing:0.8px;text-shadow:0 2px 10px rgba(0,0,0,0.8)}
+.cat-scroll{display:flex;gap:7px;padding:5px 12px 10px;overflow-x:auto;scrollbar-width:none}
+.cat-scroll::-webkit-scrollbar{display:none}
+.cat-btn{flex-shrink:0;padding:8px 15px;border-radius:20px;font-family:'Cinzel',serif;font-size:11px;font-weight:700;border:1.5px solid rgba(201,168,76,0.3);background:rgba(0,0,0,0.55);color:rgba(201,168,76,0.6);cursor:pointer;white-space:nowrap;touch-action:manipulation;-webkit-appearance:none}
+.cat-btn.on{background:linear-gradient(135deg,var(--gold-dd),var(--gold-d));color:var(--gold-l);border-color:var(--gold)}
+
+/* 2-COLUMN GRID */
+.menu-grid{padding:0 10px 14px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.menu-card{display:flex;flex-direction:column;overflow:hidden;background:rgba(4,0,0,0.9);
+  border:1px solid rgba(201,168,76,0.45);border-radius:11px;box-shadow:0 3px 14px rgba(0,0,0,0.55)}
+.mc-img{width:100%;height:110px;overflow:hidden;border-bottom:2px solid rgba(201,168,76,0.45);
+  display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.4);flex-shrink:0}
+.mc-img img{width:100%;height:100%;object-fit:cover;display:block}
+.mc-img.placeholder{font-size:38px}
+.mc-body{padding:9px 9px 10px;display:flex;flex-direction:column;flex:1}
+.mc-name{font-family:'Cinzel',serif;font-size:13px;font-weight:800;color:var(--cream);
+  margin-bottom:4px;line-height:1.25}
+.mc-desc{font-family:'Cormorant Garamond',serif;font-style:italic;
+  font-size:11.5px;color:rgba(240,223,192,0.68);line-height:1.35;margin-bottom:7px}
+.mc-choice{margin-bottom:8px}
+.mc-choice select{width:100%;padding:7px 8px;background:rgba(0,0,0,0.65);
+  border:1.5px solid rgba(201,168,76,0.4);border-radius:6px;color:var(--gold-l);
+  font-family:'Cinzel',serif;font-size:10.5px;font-weight:700;outline:none;
+  -webkit-appearance:none;appearance:none;cursor:pointer}
+.mc-foot{display:flex;align-items:center;justify-content:space-between;margin-top:auto}
+.mc-price{font-family:'Cinzel Decorative',cursive;font-size:16px;font-weight:700;color:var(--gold)}
+.add-btn{width:34px;height:34px;background:linear-gradient(135deg,var(--gold-d),var(--gold));border:none;border-radius:50%;font-size:22px;line-height:1;color:#030000;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;touch-action:manipulation;box-shadow:0 2px 8px rgba(201,168,76,0.4);font-weight:900}
+.add-btn:active{transform:scale(0.82)}
+.add-btn.incart{background:linear-gradient(135deg,#004d18,#008830)}
+
+/* CART */
+.scr-hdr{display:flex;align-items:center;gap:12px;padding:13px 14px;background:rgba(1,0,0,0.92);border-bottom:1px solid rgba(201,168,76,0.2);position:sticky;top:0;z-index:10;flex-shrink:0}
+.back-btn{width:34px;height:34px;border:1.5px solid var(--gold);border-radius:50%;background:transparent;color:var(--gold);font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;touch-action:manipulation}
+.scr-ttl{font-family:'Cinzel Decorative',cursive;font-size:15px;color:var(--gold)}
+.cart-list{padding:11px;flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:7px}
+.cart-item{display:flex;align-items:center;gap:9px;padding:11px 12px;background:rgba(4,0,0,0.88);border:1px solid rgba(201,168,76,0.28);border-radius:9px}
+.ci-name{font-family:'Cinzel',serif;font-size:11px;color:var(--cream);flex:1;min-width:0;line-height:1.35}
+.qty-row{display:flex;align-items:center;gap:7px}
+.qty-btn{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--gold);background:transparent;color:var(--gold);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;touch-action:manipulation}
+.qty-num{font-family:'Cinzel',serif;font-size:13px;color:var(--cream);min-width:18px;text-align:center}
+.ci-price{font-family:'Cinzel',serif;font-size:12px;font-weight:700;color:var(--gold);white-space:nowrap}
+.ibox{margin:0 11px 10px;padding:13px;background:rgba(4,0,0,0.88);border:1px solid rgba(201,168,76,0.3);border-radius:10px}
+.ibox-ttl{font-family:'Cinzel',serif;font-size:11px;color:var(--gold);margin-bottom:9px;letter-spacing:0.3px}
+.loc-methods{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:8px}
+.loc-method-btn{padding:11px 6px;background:rgba(0,0,0,0.55);border:1.5px solid rgba(201,168,76,0.3);border-radius:8px;font-family:'Cinzel',serif;font-size:9.5px;color:rgba(201,168,76,0.65);cursor:pointer;text-align:center;line-height:1.5;touch-action:manipulation}
+.loc-status{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;color:rgba(240,223,192,0.6);margin-bottom:9px;min-height:18px;line-height:1.4}
+.loc-result{display:none;margin-top:8px;padding:10px 12px;background:rgba(0,60,0,0.3);border:1px solid rgba(0,160,0,0.3);border-radius:7px;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12px;color:#80e880;word-break:break-all}
+.cart-sum{padding:12px 13px;background:rgba(2,0,0,0.93);border-top:1px solid rgba(201,168,76,0.25);flex-shrink:0}
+.sum-row{display:flex;justify-content:space-between;margin-bottom:6px}
+.sum-lbl{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;color:var(--cream)}
+.sum-val{font-family:'Cinzel',serif;font-size:13px;color:var(--gold)}
+.sum-total .sum-lbl{font-family:'Cinzel',serif;font-size:14px;font-style:normal;color:var(--gold-l)}
+.sum-total .sum-val{font-size:16px;color:var(--gold-l)}
+
+/* HISTORY */
+.hist-list{padding:11px;flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:8px}
+.hcard{padding:13px;background:rgba(4,0,0,0.88);border:1px solid rgba(201,168,76,0.28);border-radius:10px}
+.hcard-id{font-family:'Cinzel',serif;font-size:10px;color:var(--gold-d);margin-bottom:2px}
+.hcard-date{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12px;color:rgba(240,223,192,0.48);margin-bottom:5px}
+.hcard-items{font-family:'Cormorant Garamond',serif;font-size:13px;color:var(--cream);margin-bottom:5px;line-height:1.5}
+.hcard-total{font-family:'Cinzel',serif;font-size:14px;font-weight:700;color:var(--gold)}
+.hcard-st{display:inline-block;margin-top:6px;padding:3px 11px;border-radius:10px;font-family:'Cinzel',serif;font-size:9px;font-weight:700}
+.st-p{background:rgba(150,70,0,0.22);color:#e8a040;border:1px solid rgba(150,70,0,0.38)}
+.st-c{background:rgba(0,110,55,0.22);color:#22c870;border:1px solid rgba(0,110,55,0.38)}
+.st-d{background:rgba(0,70,170,0.22);color:#60aaff;border:1px solid rgba(0,70,170,0.38)}
+
+/* BOTTOM NAV */
+.bnav{position:sticky;bottom:0;z-index:20;display:grid;grid-template-columns:1fr 1fr 1fr;background:rgba(1,0,0,0.97);border-top:1px solid rgba(201,168,76,0.18);backdrop-filter:blur(10px);flex-shrink:0}
+.bnav-btn{padding:11px 4px;border:none;background:transparent;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;touch-action:manipulation}
+.bnav-ico{font-size:19px;color:rgba(201,168,76,0.3)}
+.bnav-lbl{font-family:'Cinzel',serif;font-size:7px;color:rgba(201,168,76,0.3);letter-spacing:0.2px}
+.bnav-btn.on .bnav-ico,.bnav-btn.on .bnav-lbl{color:var(--gold)}
+.empty{text-align:center;padding:28px 20px;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;color:rgba(240,223,192,0.28);grid-column:1/-1}
+</style>
+</head>
+<body>
+<div id="toast"></div>
+
+<div id="loginScreen" class="screen active">
+  <div class="lw">
+    <div class="logo-wrap">
+      <img src="images/logo.jpg" alt="Lahore Biryani Logo">
+    </div>
+    <div class="login-title">Lahore Biryani<br>&amp; Chicken Roast</div>
+    <div class="login-sub">Estd. 1991 &nbsp;&middot;&nbsp; Delhi Gate, Lahore</div>
+    <div class="login-card">
+      <div class="tab-row">
+        <button class="tab-btn on" id="tabA">Sign In</button>
+        <button class="tab-btn" id="tabB">Sign Up</button>
+      </div>
+      <div id="formIn">
+        <div class="form-g"><label class="lbl">Phone Number</label>
+          <input class="inp" id="lgPhone" type="tel" inputmode="numeric" placeholder="03XX XXXXXXX" autocomplete="tel"></div>
+        <div class="form-g" style="margin-bottom:18px"><label class="lbl">Password</label>
+          <input class="inp" id="lgPwd" type="password" placeholder="Your password" autocomplete="current-password"></div>
+        <button class="btn btn-gold" style="width:100%;padding:14px;font-size:13px" id="loginBtn">Sign In &#10022;</button>
+        <div class="sep">&mdash; or &mdash;</div>
+        <button class="btn btn-outline" style="width:100%;padding:12px;font-size:11px" id="guestBtn">Browse as Guest</button>
+      </div>
+      <div id="formUp" style="display:none">
+        <div class="form-g"><label class="lbl">Full Name</label>
+          <input class="inp" id="sgName" type="text" inputmode="text" placeholder="Your full name" autocomplete="name"></div>
+        <div class="form-g"><label class="lbl">Phone Number</label>
+          <input class="inp" id="sgPhone" type="tel" inputmode="numeric" placeholder="03XX XXXXXXX" autocomplete="tel"></div>
+        <div class="form-g" style="margin-bottom:18px"><label class="lbl">Password</label>
+          <input class="inp" id="sgPwd" type="password" placeholder="Create a password" autocomplete="new-password"></div>
+        <button class="btn btn-gold" style="width:100%;padding:14px;font-size:13px" id="signupBtn">Create Account &#10022;</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="mainScreen" class="screen">
+  <div class="navbar">
+    <div class="nav-left">
+      <div class="nav-logo-wrap"><img src="images/logo.jpg" alt="Logo"></div>
+      <div class="nav-txt">
+        <span class="l1">Lahore Biryani &amp; Chicken Roast</span>
+        <span class="l2">Estd. 1991 &nbsp;&middot;&nbsp; Delhi Gate, Lahore</span>
+      </div>
+    </div>
+    <div class="nav-right">
+      <span class="nav-name" id="navName"></span>
+      <div class="cart-btn" id="cartBtn">&#128722;<span class="cart-cnt" id="cartCnt">0</span></div>
+    </div>
+  </div>
+  <div class="hero">
+    <img src="images/hero-biryani.jpg" alt="Lahore Biryani">
+    <div class="hero-g"></div>
+    <div class="hero-txt">
+      <div class="h-t">LAHORE</div>
+      <div class="h-s">Biryani &amp; Chicken Roast</div>
+      <div class="h-tag">&#10022; Estd. 1991 &nbsp;&middot;&nbsp; Daig Style &nbsp;&middot;&nbsp; Pure Desi Flavor &#10022;</div>
+    </div>
+  </div>
+  <div class="gd"></div>
+  <div class="sec-wrap">
+    <div class="sec-head">
+      <div class="orn"><span class="ol"></span><span class="os">&#10087;</span><span class="os">&#10022;</span><span class="os">&#10087;</span><span class="ol orr"></span></div>
+      <div class="sec-title">Our Menu</div>
+      <div class="orn bot"><span class="ol"></span><span class="os">&#10022;</span><span class="ol orr"></span></div>
+    </div>
+    <div class="cat-scroll" id="catScroll"></div>
+    <div class="menu-grid" id="menuList"></div>
+  </div>
+  <div style="height:68px"></div>
+  <div class="bnav">
+    <button class="bnav-btn on" id="bnHome"><span class="bnav-ico">&#127968;</span><span class="bnav-lbl">Home</span></button>
+    <button class="bnav-btn" id="bnCart"><span class="bnav-ico">&#128722;</span><span class="bnav-lbl">Cart</span></button>
+    <button class="bnav-btn" id="bnOrders"><span class="bnav-ico">&#128203;</span><span class="bnav-lbl">My Orders</span></button>
+  </div>
+</div>
+
+<div id="cartScreen" class="screen">
+  <div class="scr-hdr">
+    <button class="back-btn" id="cartBack">&#8249;</button>
+    <div class="scr-ttl">Your Cart</div>
+    <button class="btn btn-red" style="padding:7px 12px;font-size:10px;margin-left:auto" id="cartLogout">Logout</button>
+  </div>
+  <div class="cart-list" id="cartList"></div>
+  <div class="ibox">
+    <div class="ibox-ttl">&#128205; Delivery Location</div>
+    <div class="loc-status" id="locStatus">Share your location for delivery</div>
+    <div class="loc-methods">
+      <button class="loc-method-btn" id="gpsBtn">&#128225; Auto GPS<br><span style="font-size:8px;opacity:0.65">Uses device location</span></button>
+      <button class="loc-method-btn" id="manualBtn">&#9998; Type Address<br><span style="font-size:8px;opacity:0.65">Write manually</span></button>
+    </div>
+    <div id="manualRow" style="display:none;margin-top:8px">
+      <input class="inp" id="manualLoc" type="text" inputmode="text"
+        placeholder="House no., street, area, Lahore"
+        style="font-size:13px;padding:11px 13px;margin-bottom:7px">
+      <button class="btn btn-gold" style="width:100%;padding:10px;font-size:11px" id="saveLocBtn">&#10003; Save Address</button>
+    </div>
+    <div class="loc-result" id="locResult"></div>
+  </div>
+  <div class="ibox">
+    <label class="lbl" style="margin-bottom:8px">&#128221; Special Instructions</label>
+    <textarea class="inp" id="instTxt" rows="3" inputmode="text"
+      placeholder="Extra spicy? Less oil? Separate packing?..."
+      style="resize:none;font-size:14px"></textarea>
+  </div>
+  <div class="cart-sum" id="cartSum"></div>
+  <button class="btn btn-wa" style="width:calc(100% - 22px);margin:10px 11px 16px;padding:15px;font-size:13px" id="placeBtn">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.093.541 4.063 1.487 5.782L.057 23.5l5.86-1.407A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.9a9.9 9.9 0 01-5.03-1.369l-.361-.214-3.742.898.934-3.63-.235-.373A9.9 9.9 0 012.1 12C2.1 6.534 6.534 2.1 12 2.1S21.9 6.534 21.9 12 17.466 21.9 12 21.9z"/></svg>
+    Send Order via WhatsApp
+  </button>
+  <div style="height:10px"></div>
+</div>
+
+<div id="historyScreen" class="screen">
+  <div class="scr-hdr">
+    <button class="back-btn" id="histBack">&#8249;</button>
+    <div class="scr-ttl">My Orders</div>
+    <button class="btn btn-red" style="padding:7px 12px;font-size:10px;margin-left:auto" id="histLogout">Logout</button>
+  </div>
+  <div class="hist-list" id="histList"></div>
+</div>
+
+<script>
+var IMG = {
+  pkg_full:    'images/full-package.jpg',
+  roast_full:  'images/roast.jpg',
+  drumstick:   'images/drumstick.jpg',
+  seekh:       'images/seekh-kabab.jpg',
+  shami:       'images/chicken-shami.jpg',
+  naan:        'images/naan.jpg',
+  water_big:   'images/water-big.jpg',
+  water_small: 'images/water-small.jpg',
+  cola:        'images/cola-next.jpg',
+  zarda:       'images/zarda.jpg',
+  hero:        'images/hero-biryani.jpg'
+};
+
+var EMOJI = { salad:'\uD83E\uDD57', raita:'\uD83C\uDF76' };
+
+var MENU = [
+  {id:'pk1',cat:'Packages',name:'Full Biryani Package',desc:'1kg Rice, 300g Roast, 200g Matanjan, Zarda, Raita & Salad',price:720,img:'pkg_full',hasChoice:true},
+  {id:'pk2',cat:'Packages',name:'Half Biryani Package',desc:'1kg Rice, 200g Thai Piece, Raita & Salad',price:620,img:'pkg_full',hasChoice:true},
+  {id:'pk3',cat:'Packages',name:'Sada Biryani Package',desc:'200g Rice, Raita & Salad',price:360,img:'hero',hasChoice:true},
+  {id:'m1',cat:'Biryani & Meat',name:'Roast per KG (300g)',desc:'Slow-cooked tender roast chicken',price:380,img:'roast_full'},
+  {id:'m2',cat:'Biryani & Meat',name:'Drumstick',desc:'Crispy chicken drumstick piece',price:160,img:'drumstick'},
+  {id:'m3',cat:'Biryani & Meat',name:'4 Sikh Kabab Plate',desc:'Grilled seekh kababs with Raita & Salad',price:240,img:'seekh'},
+  {id:'m4',cat:'Biryani & Meat',name:'Chicken Shami',desc:'Homemade chicken shami kabab',price:80,img:'shami'},
+  {id:'e1',cat:'Extras',name:'Naan',desc:'Freshly baked soft naan bread',price:30,img:'naan'},
+  {id:'e2',cat:'Extras',name:'Mineral Water (1.5L)',desc:'HS bottled drinking water',price:100,img:'water_big'},
+  {id:'e3',cat:'Extras',name:'Mineral Water (Small)',desc:'HS bottled drinking water',price:50,img:'water_small'},
+  {id:'e5',cat:'Extras',name:'Cola Next (1 Litre)',desc:'Cold drink bottle',price:150,img:'cola'},
+  {id:'e6',cat:'Extras',name:'Cola Next (2 Litre)',desc:'Cold drink bottle',price:220,img:'cola'},
+  {id:'s1',cat:'Extras',name:'Salad',desc:'Fresh side salad',price:50,emoji:'salad'},
+  {id:'s2',cat:'Extras',name:'Raita',desc:'Yogurt raita',price:50,emoji:'raita'},
+  {id:'d1',cat:'Desserts',name:'Zarda Matanjan (Full)',desc:'Sweet saffron rice - full plate',price:300,img:'zarda'},
+  {id:'d2',cat:'Desserts',name:'Zarda Matanjan (Half)',desc:'Sweet saffron rice - half plate',price:150,img:'zarda'}
+];
+var CATS = ['All'];
+var seen = {};
+MENU.forEach(function(i){ if(!seen[i.cat]){seen[i.cat]=1;CATS.push(i.cat);} });
+
+var WA = '923084374717';
+var CU = null, CART = [], LOC = null, activeCat = 'All';
+
+function LS(k){ try{ return JSON.parse(localStorage.getItem(k)||'null'); }catch(e){ return null; } }
+function LSS(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+
+function toast(msg,type){
+  var t=document.getElementById('toast');
+  t.textContent=msg;
+  t.className='show'+(type?' '+type:'');
+  clearTimeout(t._t);
+  t._t=setTimeout(function(){ t.className=''; },2800);
+}
+
+function show(id){
+  document.querySelectorAll('.screen').forEach(function(s){ s.classList.remove('active'); });
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+function goMain(){ show('mainScreen'); renderCats(); renderMenu(); updateBadge(); setNav('bnHome'); }
+function goCart(){ show('cartScreen'); renderCart(); setNav('bnCart'); }
+function goHist(){ show('historyScreen'); renderHist(); setNav('bnOrders'); }
+function setNav(a){
+  ['bnHome','bnCart','bnOrders'].forEach(function(id){
+    document.getElementById(id).className='bnav-btn'+(id===a?' on':'');
+  });
+}
+
+document.addEventListener('DOMContentLoaded', function(){
+  document.getElementById('tabA').addEventListener('click', function(){ swTab('in'); });
+  document.getElementById('tabB').addEventListener('click', function(){ swTab('up'); });
+  document.getElementById('loginBtn').addEventListener('click', doLogin);
+  document.getElementById('guestBtn').addEventListener('click', doGuest);
+  document.getElementById('signupBtn').addEventListener('click', doSignup);
+  document.getElementById('cartBtn').addEventListener('click', function(){ goCart(); });
+  document.getElementById('bnHome').addEventListener('click', function(){ goMain(); });
+  document.getElementById('bnCart').addEventListener('click', function(){ goCart(); });
+  document.getElementById('bnOrders').addEventListener('click', function(){ goHist(); });
+  document.getElementById('cartBack').addEventListener('click', function(){ goMain(); });
+  document.getElementById('cartLogout').addEventListener('click', doLogout);
+  document.getElementById('placeBtn').addEventListener('click', placeOrder);
+  document.getElementById('gpsBtn').addEventListener('click', doGPS);
+  document.getElementById('manualBtn').addEventListener('click', toggleManual);
+  document.getElementById('saveLocBtn').addEventListener('click', saveManual);
+  document.getElementById('histBack').addEventListener('click', function(){ goMain(); });
+  document.getElementById('histLogout').addEventListener('click', doLogout);
+});
+
+function swTab(t){
+  document.getElementById('formIn').style.display = t==='in'?'block':'none';
+  document.getElementById('formUp').style.display = t==='up'?'block':'none';
+  document.getElementById('tabA').className = 'tab-btn'+(t==='in'?' on':'');
+  document.getElementById('tabB').className = 'tab-btn'+(t==='up'?' on':'');
+}
+
+function doLogin(){
+  var phone = document.getElementById('lgPhone').value.trim();
+  var pwd = document.getElementById('lgPwd').value.trim();
+  if(!phone){ toast('Enter your phone number','err'); return; }
+  if(!pwd){ toast('Enter your password','err'); return; }
+  var users = LS('lb_users') || [];
+  var u = null;
+  for(var i=0;i<users.length;i++){ if(users[i].phone===phone && users[i].pwd===pwd){ u=users[i]; break; } }
+  if(!u){ toast('Wrong phone or password','err'); return; }
+  CU = {name:u.name, phone:u.phone};
+  enterApp();
+}
+
+function doSignup(){
+  var name = document.getElementById('sgName').value.trim();
+  var phone = document.getElementById('sgPhone').value.trim();
+  var pwd = document.getElementById('sgPwd').value.trim();
+  if(!name){ toast('Enter your name','err'); return; }
+  if(!phone || phone.length < 10){ toast('Enter a valid phone number','err'); return; }
+  if(!pwd || pwd.length < 4){ toast('Password must be 4+ characters','err'); return; }
+  var users = LS('lb_users') || [];
+  for(var i=0;i<users.length;i++){ if(users[i].phone===phone){ toast('Number already registered','err'); return; } }
+  var nu = {name:name, phone:phone, pwd:pwd, joined:Date.now()};
+  users.push(nu); LSS('lb_users', users);
+  CU = {name:name, phone:phone};
+  toast('Welcome '+name+'! &#10022;','ok');
+  enterApp();
+}
+
+function doGuest(){ CU = {name:'Guest', phone:'', isGuest:true}; enterApp(); }
+
+function doLogout(){
+  CU=null; CART=[]; LOC=null;
+  document.getElementById('lgPhone').value='';
+  document.getElementById('lgPwd').value='';
+  document.getElementById('locStatus').textContent='Share your location for delivery';
+  document.getElementById('locStatus').style.color='';
+  document.getElementById('locResult').style.display='none';
+  document.getElementById('manualRow').style.display='none';
+  show('loginScreen');
+}
+
+function enterApp(){
+  document.getElementById('navName').textContent = CU.name;
+  goMain();
+  toast('Welcome, '+CU.name+'! &#10022;','ok');
+}
+
+function renderCats(){
+  var html = '';
+  CATS.forEach(function(c){
+    html += '<button class="cat-btn'+(c===activeCat?' on':'')+'" data-cat="'+c+'">'+c+'</button>';
+  });
+  document.getElementById('catScroll').innerHTML = html;
+  document.querySelectorAll('.cat-btn').forEach(function(b){
+    b.addEventListener('click', function(){
+      activeCat = b.getAttribute('data-cat');
+      renderCats(); renderMenu();
+    });
+  });
+}
+
+function renderMenu(){
+  var mavail = LS('lb_menuAvail') || {};
+  var items = MENU.filter(function(i){
+    return (activeCat==='All' || i.cat===activeCat) && mavail[i.id]!==false;
+  });
+  var el = document.getElementById('menuList');
+  if(!items.length){ el.innerHTML='<div class="empty">Nothing here right now</div>'; return; }
+  var html = '';
+  items.forEach(function(item){
+    var inC = false;
+    for(var i=0;i<CART.length;i++){ if(CART[i].baseId===item.id){ inC=true; break; } }
+
+    var imgBlock;
+    if(item.img){
+      imgBlock = '<div class="mc-img"><img src="'+IMG[item.img]+'" alt="'+item.name+'" loading="lazy"></div>';
+    } else {
+      imgBlock = '<div class="mc-img placeholder">'+EMOJI[item.emoji]+'</div>';
+    }
+
+    var choiceBlock = '';
+    if(item.hasChoice){
+      choiceBlock = '<div class="mc-choice"><select id="choice_'+item.id+'">'
+        +'<option value="Sikh Kabab">With Sikh Kabab</option>'
+        +'<option value="Chicken Shami">With Chicken Shami</option>'
+        +'</select></div>';
+    }
+
+    html += '<div class="menu-card">'
+      + imgBlock
+      + '<div class="mc-body">'
+        + '<div class="mc-name">'+item.name+'</div>'
+        + '<div class="mc-desc">'+item.desc+'</div>'
+        + choiceBlock
+        + '<div class="mc-foot">'
+          + '<div class="mc-price">Rs.'+item.price+'</div>'
+          + '<button class="add-btn'+(inC?' incart':'')+'" data-id="'+item.id+'">'+(inC?'&#10003;':'+')+'</button>'
+        + '</div>'
+      + '</div></div>';
+  });
+  el.innerHTML = html;
+  document.querySelectorAll('.add-btn').forEach(function(b){
+    b.addEventListener('click', function(){ addToCart(b.getAttribute('data-id')); });
+  });
+}
+
+function updateBadge(){
+  var total = 0; CART.forEach(function(i){ total+=i.qty; });
+  document.getElementById('cartCnt').textContent = total;
+}
+
+function addToCart(id){
+  var item = null;
+  for(var i=0;i<MENU.length;i++){ if(MENU[i].id===id){ item=MENU[i]; break; } }
+  var displayName = item.name;
+  var cartId = id;
+  if(item.hasChoice){
+    var sel = document.getElementById('choice_'+id);
+    var choice = sel ? sel.value : 'Sikh Kabab';
+    displayName = item.name + ' (' + choice + ')';
+    cartId = id + '_' + choice.replace(/\s+/g,'');
+  }
+  var ex = null;
+  for(var i=0;i<CART.length;i++){ if(CART[i].id===cartId){ ex=CART[i]; break; } }
+  if(ex) ex.qty++;
+  else CART.push({id:cartId,baseId:id,name:displayName,price:item.price,qty:1});
+  updateBadge(); renderMenu();
+  toast('&#10022; '+displayName+' added!');
+}
+
+function chQty(id, d){
+  var idx = -1;
+  for(var i=0;i<CART.length;i++){ if(CART[i].id===id){ idx=i; break; } }
+  if(idx<0) return;
+  CART[idx].qty += d;
+  if(CART[idx].qty<=0) CART.splice(idx,1);
+  updateBadge(); renderCart(); renderMenu();
+}
+
+function renderCart(){
+  var el = document.getElementById('cartList');
+  if(!CART.length){
+    el.innerHTML='<div class="empty">Cart is empty.<br>Add items from the menu!</div>';
+    document.getElementById('cartSum').innerHTML=''; return;
+  }
+  var html = '';
+  CART.forEach(function(item){
+    html += '<div class="cart-item">'
+      +'<div class="ci-name">'+item.name+'</div>'
+      +'<div class="qty-row">'
+        +'<button class="qty-btn" data-id="'+item.id+'" data-d="-1">&#8722;</button>'
+        +'<span class="qty-num">'+item.qty+'</span>'
+        +'<button class="qty-btn" data-id="'+item.id+'" data-d="1">+</button>'
+      +'</div>'
+      +'<div class="ci-price">Rs.'+(item.price*item.qty)+'</div>'
+    +'</div>';
+  });
+  el.innerHTML = html;
+  document.querySelectorAll('.qty-btn').forEach(function(b){
+    b.addEventListener('click', function(){ chQty(b.getAttribute('data-id'), parseInt(b.getAttribute('data-d'))); });
+  });
+  var total = 0; CART.forEach(function(i){ total+=i.price*i.qty; });
+  document.getElementById('cartSum').innerHTML =
+    '<div class="gd-thin"></div>'
+    +'<div class="sum-row sum-total">'
+      +'<span class="sum-lbl">Total</span>'
+      +'<span class="sum-val">Rs. '+total+'</span>'
+    +'</div>';
+}
+
+function doGPS(){
+  var st = document.getElementById('locStatus');
+  var res = document.getElementById('locResult');
+  var btn = document.getElementById('gpsBtn');
+  if(!navigator.geolocation){
+    st.textContent='GPS not supported. Please type your address.';
+    st.style.color='#cc4444';
+    document.getElementById('manualRow').style.display='block';
+    return;
+  }
+  st.textContent='Requesting GPS... tap Allow when prompted';
+  st.style.color='var(--gold-l)';
+  btn.style.opacity='0.6';
+  navigator.geolocation.getCurrentPosition(
+    function(pos){
+      var lat=pos.coords.latitude.toFixed(6);
+      var lng=pos.coords.longitude.toFixed(6);
+      var url='https://maps.google.com/?q='+lat+','+lng;
+      LOC={type:'gps',display:lat+', '+lng,mapUrl:url};
+      st.textContent='GPS location saved!'; st.style.color='#80e880';
+      res.style.display='block';
+      res.innerHTML='&#128205; <a href="'+url+'" target="_blank" style="color:#80e880;text-decoration:underline">Open in Google Maps</a><br><small style="opacity:0.7">'+lat+', '+lng+'</small>';
+      btn.innerHTML='&#128225; Update GPS<br><span style="font-size:8px;opacity:0.65">Uses device location</span>';
+      btn.style.opacity='1';
+      toast('Location captured!','ok');
+    },
+    function(err){
+      var msg='';
+      if(err.code===1) msg='Permission denied. Please type your address below.';
+      else if(err.code===2) msg='GPS unavailable. Please type your address.';
+      else msg='GPS timed out. Please type your address.';
+      st.textContent=msg; st.style.color='#cc4444';
+      btn.style.opacity='1';
+      document.getElementById('manualRow').style.display='block';
+    },
+    {timeout:18000, maximumAge:0, enableHighAccuracy:true}
+  );
+}
+
+function toggleManual(){
+  var r=document.getElementById('manualRow');
+  r.style.display = r.style.display==='none'?'block':'none';
+  if(r.style.display==='block') document.getElementById('manualLoc').focus();
+}
+
+function saveManual(){
+  var v = document.getElementById('manualLoc').value.trim();
+  if(!v){ toast('Please enter your address','err'); return; }
+  LOC={type:'manual',display:v,mapUrl:null};
+  var st=document.getElementById('locStatus');
+  st.textContent='Address saved!'; st.style.color='#80e880';
+  var res=document.getElementById('locResult');
+  res.style.display='block'; res.textContent='\uD83D\uDCCD '+v;
+  document.getElementById('manualRow').style.display='none';
+  toast('Address saved!','ok');
+}
+
+function placeOrder(){
+  if(!CART.length){ toast('Cart is empty!','err'); return; }
+  var inst = document.getElementById('instTxt').value.trim();
+  var total = 0; CART.forEach(function(i){ total+=i.price*i.qty; });
+  var itemsText = '';
+  CART.forEach(function(i){ itemsText += '  - '+i.name+' x'+i.qty+' = Rs.'+i.price*i.qty+'\n'; });
+  var locLine = LOC
+    ? (LOC.mapUrl ? 'Map: '+LOC.mapUrl+'\nCoords: '+LOC.display : 'Address: '+LOC.display)
+    : 'Location: Not shared';
+  var msg = '\uD83C\uDF5B *NEW ORDER*\n'
+    +'*Lahore Biryani & Chicken Roast*\n'
+    +'\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\n'
+    +'*Name:* '+CU.name+'\n'
+    +'*Phone:* '+(CU.phone||'Guest')+'\n'
+    +'\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\n'
+    +'*Order:*\n'+itemsText
+    +'\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\n'
+    +'*TOTAL: Rs.'+total+'*\n'
+    +'\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\n'
+    +'\uD83D\uDCCD '+locLine
+    +(inst?'\n\uD83D\uDCDD Note: '+inst:'')+'\n'
+    +'\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\n'
+    +'Time: '+new Date().toLocaleString('en-PK');
+
+  var orders = LS('lb_orders') || [];
+  orders.unshift({
+    id:'ORD'+Date.now().toString().slice(-6),
+    user:CU.name, phone:CU.phone||'Guest',
+    items: CART.map(function(i){ return i.name+' x'+i.qty; }).join(', '),
+    total:total, location:LOC?LOC.display:'Not shared',
+    instructions:inst, status:'pending', time:Date.now()
+  });
+  LSS('lb_orders', orders);
+  window.open('https://wa.me/923084374717?text='+encodeURIComponent(msg),'_blank');
+  CART=[]; LOC=null;
+  document.getElementById('instTxt').value='';
+  document.getElementById('locStatus').textContent='Share your location for delivery';
+  document.getElementById('locStatus').style.color='';
+  document.getElementById('locResult').style.display='none';
+  document.getElementById('manualLoc').value='';
+  document.getElementById('manualRow').style.display='none';
+  updateBadge();
+  toast('Order sent to WhatsApp!','ok');
+  setTimeout(function(){ goHist(); },1000);
+}
+
+function renderHist(){
+  var orders = (LS('lb_orders')||[]).filter(function(o){
+    return CU && (o.user===CU.name || (CU.isGuest && o.phone==='Guest'));
+  });
+  var el = document.getElementById('histList');
+  if(!orders.length){ el.innerHTML='<div class="empty">No orders yet.<br>Your orders will appear here.</div>'; return; }
+  var html='';
+  orders.forEach(function(o){
+    var sc={pending:'st-p',confirmed:'st-c',delivered:'st-d'}[o.status]||'st-p';
+    html += '<div class="hcard">'
+      +'<div class="hcard-id">'+o.id+'</div>'
+      +'<div class="hcard-date">'+new Date(o.time).toLocaleString('en-PK')+'</div>'
+      +'<div class="hcard-items">'+o.items+'</div>'
+      +'<div class="hcard-total">Rs. '+o.total+'</div>'
+      +'<span class="hcard-st '+sc+'">'+o.status.toUpperCase()+'</span>'
+    +'</div>';
+  });
+  el.innerHTML = html;
+}
+</script>
+</body>
+</html>
